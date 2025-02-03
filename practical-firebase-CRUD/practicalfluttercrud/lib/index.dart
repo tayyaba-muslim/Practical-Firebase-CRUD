@@ -98,67 +98,74 @@ void _editProduct(String medId, String currentTitle, String currentDesc,  double
                   var doc = snapshot.data!.docs[index];
                   var medId = doc.id;
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.medical_services, size: 40),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  doc["title"],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  doc["desc"],
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  '₹${doc["price"]}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Actions for editing and deleting
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () {
-                                  _editProduct(medId, doc["title"], doc["desc"], doc["price"]);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  _deleteProduct(medId);
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+  elevation: 10, // Thoda zyada shadow dena
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15), // Card ke kone thode rounded honge
+  ),
+  color: Colors.white, // Card ka background color
+  child: Padding(
+    padding: const EdgeInsets.all(15.0), // Thoda zyada padding
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(Icons.medical_services, size: 45, color: Colors.blue), // Icon ka color blue
+        SizedBox(width: 15), // Thoda gap badhaya
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                doc["title"],
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black87, // Thoda darker text color
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                doc["desc"],
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 15,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Rs:${doc["price"]}',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green, // Price ko thoda green kar diya
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Actions for editing and deleting
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit, color: Colors.blue),
+              onPressed: () {
+                _editProduct(medId, doc["title"], doc["desc"], doc["price"]);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                _deleteProduct(medId);
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+);
+
                 },
               );
             } else {
