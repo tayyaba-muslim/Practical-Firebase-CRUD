@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:practicalfluttercrud/addmedicine.dart';
+import 'package:practicalfluttercrud/auth.dart';
 import 'package:practicalfluttercrud/firebase_options.dart';
 import 'package:practicalfluttercrud/index.dart';
 
@@ -25,10 +26,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Mymedicine(),
+      home: Signup(),
    
        routes:{
         '/addmedicine':(context)=>AddMedicine(),
+        '/medicine':(context)=>Mymedicine(),
+        '/login':(context)=>Login(),
+
+
       }
 
     );

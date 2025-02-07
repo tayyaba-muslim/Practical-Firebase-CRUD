@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Mymedicine extends StatefulWidget {
@@ -85,6 +86,15 @@ void _editProduct(String medId, String currentTitle, String currentDesc,  double
               Navigator.pushNamed(context, "/addmedicine");
             },
           ),
+        
+        // Logout icon
+          GestureDetector(
+            child: Icon(Icons.logout),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacementNamed(context, '/Login');
+            },
+          ),
         ],
       ),
       body: StreamBuilder(
@@ -99,18 +109,18 @@ void _editProduct(String medId, String currentTitle, String currentDesc,  double
                   var medId = doc.id;
                   return Card(
   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-  elevation: 10, // Thoda zyada shadow dena
+  elevation: 10, 
   shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15), // Card ke kone thode rounded honge
+    borderRadius: BorderRadius.circular(15), 
   ),
-  color: Colors.white, // Card ka background color
+  color: Colors.white, 
   child: Padding(
-    padding: const EdgeInsets.all(15.0), // Thoda zyada padding
+    padding: const EdgeInsets.all(15.0), 
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(Icons.medical_services, size: 45, color: Colors.blue), // Icon ka color blue
-        SizedBox(width: 15), // Thoda gap badhaya
+        Icon(Icons.medical_services, size: 45, color: Colors.blue), 
+        SizedBox(width: 15),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +130,7 @@ void _editProduct(String medId, String currentTitle, String currentDesc,  double
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.black87, // Thoda darker text color
+                  color: Colors.black87, 
                 ),
               ),
               SizedBox(height: 8),
@@ -137,13 +147,13 @@ void _editProduct(String medId, String currentTitle, String currentDesc,  double
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green, // Price ko thoda green kar diya
+                  color: Colors.green, 
                 ),
               ),
             ],
           ),
         ),
-        // Actions for editing and deleting
+        
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
