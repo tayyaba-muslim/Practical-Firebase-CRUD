@@ -72,4 +72,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'st-project-7605b.firebasestorage.app',
     iosBundleId: 'com.example.practicalfluttercrud',
   );
+
 }
