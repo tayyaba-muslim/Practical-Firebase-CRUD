@@ -27,7 +27,43 @@ class _MymedicineState extends State<Mymedicine> {
     });
   }
 
-  // 🗑️ Delete Medicine Function
+  // Show Profile 
+  void _showProfileInfo() async {
+ 
+    var userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    
+    if (userDoc.exists) {
+      var userData = userDoc.data()!;
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Profile Info"),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Name: ${userData['name'] ?? 'N/A'}'),
+                SizedBox(height: 10),
+                Text('Email: ${userData['email'] ?? 'N/A'}'),
+            
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Close"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User data not found")));
+    }
+  }
+
+  // Delete Product
   void _deleteProduct(String medId) async {
     await medicine.doc(medId).delete();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -35,15 +71,38 @@ class _MymedicineState extends State<Mymedicine> {
     );
   }
 
-  // ✏️ Edit Medicine Function
-  void _editProduct(
-      String medId, String currentTitle, String currentDesc, double currentPrice) {
-    TextEditingController titleController =
-        TextEditingController(text: currentTitle);
-    TextEditingController descController =
-        TextEditingController(text: currentDesc);
-    TextEditingController priceController =
-        TextEditingController(text: currentPrice.toString());
+  // Info Product 
+  void _infoProduct(String medId, String currentTitle, String currentDesc, double currentPrice) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(currentTitle),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Description: $currentDesc'),
+              SizedBox(height: 10),
+              Text('Price: Rs. $currentPrice'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Edit Product
+  void _editProduct(String medId, String currentTitle, String currentDesc, double currentPrice) {
+    TextEditingController titleController = TextEditingController(text: currentTitle);
+    TextEditingController descController = TextEditingController(text: currentDesc);
+    TextEditingController priceController = TextEditingController(text: currentPrice.toString());
 
     showDialog(
       context: context,
@@ -86,7 +145,7 @@ class _MymedicineState extends State<Mymedicine> {
                 );
               },
               child: Text('Save'),
-            )
+            ),
           ],
         );
       },
@@ -105,44 +164,43 @@ class _MymedicineState extends State<Mymedicine> {
               Navigator.pushNamed(context, "/addmedicine");
             },
           ),
-        
-  PopupMenuButton<String>(
-    onSelected: (value) async {
-      if (value == 'logout') {
-        await FirebaseAuth.instance.signOut();
-        Navigator.pushReplacementNamed(context, '/login');
-      }
-    },
-    itemBuilder: (context) => [
-      PopupMenuItem(value: 'logout', child: Text("Logout")),
-      PopupMenuItem(value: 'myProfile', child: Text("myProfile")),
-
-    ],
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        children: [
-          Icon(Icons.account_circle, size: 28),
-          SizedBox(width: 8),
-          FutureBuilder<DocumentSnapshot>(
-            future: FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Text("Loading...");
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'logout') {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacementNamed(context, '/login');
+              } else if (value == 'myProfile') {
+                _showProfileInfo(); // Show profile info in a modal
               }
-              if (!snapshot.hasData || !snapshot.data!.exists) {
-                return Text("No name found");
-              }
-              String userName = snapshot.data!.get('name') ?? "Unknown";
-              return Text(userName);
             },
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'logout', child: Text("Logout")),
+              PopupMenuItem(value: 'myProfile', child: Text("myProfile")),
+            ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Icon(Icons.account_circle, size: 28),
+                  SizedBox(width: 8),
+                  FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text("Loading...");
+                      }
+                      if (!snapshot.hasData || !snapshot.data!.exists) {
+                        return Text("No name found");
+                      }
+                      String userName = snapshot.data!.get('name') ?? "Unknown";
+                      return Text(userName);
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
-      ),
-    ),
-  ),
-],
-        
       ),
       body: StreamBuilder(
         stream: medicine.snapshots(),
@@ -166,8 +224,7 @@ class _MymedicineState extends State<Mymedicine> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(Icons.medical_services,
-                              size: 45, color: Colors.blue),
+                          Icon(Icons.medical_services, size: 45, color: Colors.blue),
                           SizedBox(width: 15),
                           Expanded(
                             child: Column(
@@ -205,10 +262,15 @@ class _MymedicineState extends State<Mymedicine> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
+                                icon: Icon(Icons.info, color: Colors.red),
+                                onPressed: () {
+                                  _infoProduct(medId, doc["title"], doc["desc"], doc["price"]);
+                                },
+                              ),
+                              IconButton(
                                 icon: Icon(Icons.edit, color: Colors.blue),
                                 onPressed: () {
-                                  _editProduct(medId, doc["title"],
-                                      doc["desc"], doc["price"]);
+                                  _editProduct(medId, doc["title"], doc["desc"], doc["price"]);
                                 },
                               ),
                               IconButton(
