@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 class Mymedicine extends StatefulWidget {
   const Mymedicine({super.key});
 
@@ -16,10 +17,10 @@ class _MymedicineState extends State<Mymedicine> {
   @override
   void initState() {
     super.initState();
-    _loadUser(); // Load user data when screen loads
+    _loadUser(); 
   }
 
-  // 🔹 Reload user to ensure displayName is updated
+
   void _loadUser() async {
     await user?.reload();
     setState(() {

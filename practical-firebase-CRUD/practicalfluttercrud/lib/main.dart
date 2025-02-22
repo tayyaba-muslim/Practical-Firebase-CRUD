@@ -4,17 +4,22 @@ import 'package:practicalfluttercrud/addmedicine.dart';
 import 'package:practicalfluttercrud/auth.dart';
 import 'package:practicalfluttercrud/firebase_options.dart';
 import 'package:practicalfluttercrud/index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+
+  runApp(MyApp(isLoggedIn:isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  bool isLoggedIn;
+   MyApp({super.key, required this.isLoggedIn});
 
   // This widget is the root of your application.
   @override
@@ -26,11 +31,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Signup(),
+      home: isLoggedIn ? Mymedicine(): Login(),
    
        routes:{
-        '/addmedicine':(context)=>AddMedicine(),
-        '/medicine':(context)=>Mymedicine(),
+        '/addmedicine':(context)=> isLoggedIn ? AddMedicine(): Login(),
+        // '/medicine':(context)=>Mymedicine(),
+        '/signup':(context)=>Signup(),
         '/login':(context)=>Login(),
 
 

@@ -65,7 +65,7 @@ class _AddMedicineState extends State<AddMedicine> {
             ),
             ),
            Padding(padding: EdgeInsets.all(8.0),
-           child: ElevatedButton(onPressed: addMedicine, child: Text("Add Medince")),
+           child: ElevatedButton(onPressed: addMedicine, child: Text("Add Medicene")),
            )
         ],
       )
