@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
+// SIGNUP
 class Signup extends StatefulWidget {
   const Signup({super.key});
 
@@ -63,16 +63,16 @@ class _SignupState extends State<Signup> {
                   )),
             ),
             Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    try {
-                       final userCredential = await FirebaseAuth.instance
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final userCredential = await FirebaseAuth.instance
                         .createUserWithEmailAndPassword(
                       email: emailController.text,
                       password: passwordController.text,
                     );
-                         await FirebaseFirestore.instance
+                    await FirebaseFirestore.instance
                         .collection('users')
                         .doc(userCredential.user!.uid)
                         .set({
@@ -88,26 +88,26 @@ class _SignupState extends State<Signup> {
                     emailController.clear();
                     passwordController.clear();
                     phoneController.clear();
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'weak-password') {
-                        print('The password provided is too weak.');
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      print('The password provided is too weak.');
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("The password provided is too weak.")),
-                    );
-                      } else if (e.code == 'email-already-in-use') {
-                        print('The account already exists for that email.');
+                        SnackBar(content: Text("The password provided is too weak.")),
+                      );
+                    } else if (e.code == 'email-already-in-use') {
+                      print('The account already exists for that email.');
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("The account already exists for that email.")),
-                    );
-                    Navigator.pushNamed(context, '/login');
-                      }
-                    } catch (e) {
-                      print(e);
+                        SnackBar(content: Text("The account already exists for that email.")),
+                      );
+                      Navigator.pushNamed(context, '/login');
                     }
-                  },
-                  child: Text("Sign Up"),
-                ),
-                ),
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                child: Text("Sign Up"),
+              ),
+            ),
           ],
         ),
       ),
@@ -115,7 +115,7 @@ class _SignupState extends State<Signup> {
   }
 }
 
-//LOGIN
+// LOGIN
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -124,13 +124,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text("Login!"),
       ),
@@ -156,48 +155,49 @@ class _LoginState extends State<Login> {
                   )),
             ),
             Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-
-                  onPressed: () async {
-                    final SharedPreferences prefs = await SharedPreferences.getInstance();
-                    try {
-                       final userCredential = await FirebaseAuth.instance
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  final SharedPreferences prefs = await SharedPreferences.getInstance();
+                  try {
+                    final userCredential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                       email: emailController.text,
                       password: passwordController.text,
                     );
-                  prefs.setBool("isLoggedIn", true);
-                  // prefs.setString("email", emailController.text);
+                    prefs.setBool("isLoggedIn", true);
+                    // var userDoc = await FirebaseFirestore.instance
+                    //     .collection('users')
+                    //     .doc(userCredential.user!.uid)
+                    //     .get();
+                    // prefs.setString("userName", userDoc['name']);
+                    // prefs.setString("userEmail", userDoc['email']);
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Logged in as ${emailController.text}")),
-
                     );
                     Navigator.pushNamed(context, '/');
                     emailController.clear();
                     passwordController.clear();
-                    } on FirebaseAuthException catch (e) {
-                      prefs.setBool("isLoggedIn", false);
-
-                      if (e.code == 'user-not found') {
-                        print('No user found for that email');
+                  } on FirebaseAuthException catch (e) {
+                    prefs.setBool("isLoggedIn", false);
+                    if (e.code == 'user-not-found') {
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("No user found for that email")),
-                    );
-                    Navigator.pushNamed(context, '/');
-                      } else if (e.code == 'wrong password') {
-                        print('Wrong password provided for that user');
+                        SnackBar(content: Text("No user found for that email")),
+                      );
+                      Navigator.pushNamed(context, '/');
+                    } else if (e.code == 'wrong password') {
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Wrong password provided for that user")),
-                    );
-                      }
-                    } catch (e) {
-                      print(e);
+                        SnackBar(content: Text("Wrong password provided for that user")),
+                      );
                     }
-                  },
-                  child: Text("Sign in"),
-                ),
-                ),
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                child: Text("Sign in"),
+              ),
+            ),
           ],
         ),
       ),

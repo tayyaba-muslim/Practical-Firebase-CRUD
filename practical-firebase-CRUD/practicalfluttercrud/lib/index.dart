@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Mymedicine extends StatefulWidget {
@@ -28,7 +29,9 @@ class _MymedicineState extends State<Mymedicine> {
     });
   }
 
+
   // Show Profile 
+  
   void _showProfileInfo() async {
  
     var userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
@@ -44,9 +47,13 @@ class _MymedicineState extends State<Mymedicine> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text('User ID: ${user?.uid ?? 'N/A'}'), 
+                SizedBox(height: 10),
                 Text('Name: ${userData['name'] ?? 'N/A'}'),
                 SizedBox(height: 10),
                 Text('Email: ${userData['email'] ?? 'N/A'}'),
+                 SizedBox(height: 10),
+                Text('Phone: ${userData['phone'] ?? 'N/A'}'),
             
               ],
             ),
