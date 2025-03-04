@@ -14,6 +14,7 @@ void main() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
 
+
   runApp(MyApp(isLoggedIn:isLoggedIn));
 }
 
@@ -31,13 +32,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: isLoggedIn ? Mymedicine(): Login(),
+      home: Login(),
    
        routes:{
         '/addmedicine':(context)=> isLoggedIn ? AddMedicine(): Login(),
-        // '/medicine':(context)=>Mymedicine(),
+        '/abc':(context)=>Mymedicine(),
         '/signup':(context)=>Signup(),
-        '/login':(context)=>Login(),
+        // '/login':(context)=>Login(),
 
 
       }

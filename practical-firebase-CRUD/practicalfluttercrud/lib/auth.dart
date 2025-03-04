@@ -63,51 +63,70 @@ class _SignupState extends State<Signup> {
                   )),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  try {
-                    final userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: emailController.text,
-                      password: passwordController.text,
-                    );
-                    await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(userCredential.user!.uid)
-                        .set({
-                      'name': nameController.text,
-                      'phone': phoneController.text,
-                      'email': emailController.text,
-                    });
-                    print("User Account Created");
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("User Account Created")),
-                    );
-                    nameController.clear();
-                    emailController.clear();
-                    passwordController.clear();
-                    phoneController.clear();
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      print('The password provided is too weak.');
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("The password provided is too weak.")),
-                      );
-                    } else if (e.code == 'email-already-in-use') {
-                      print('The account already exists for that email.');
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("The account already exists for that email.")),
-                      );
-                      Navigator.pushNamed(context, '/login');
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-                child: Text("Sign Up"),
-              ),
-            ),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Existing Sign Up button
+                    ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          final userCredential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .set({
+                            'name': nameController.text,
+                            'phone': phoneController.text,
+                            'email': emailController.text,
+                          });
+                          print("User Account Created");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("User Account Created")),
+                          );
+                          nameController.clear();
+                          emailController.clear();
+                          passwordController.clear();
+                          phoneController.clear();
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            print('The password provided is too weak.');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      "The password provided is too weak.")),
+                            );
+                          } else if (e.code == 'email-already-in-use') {
+                            print('The account already exists for that email.');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      "The account already exists for that email.")),
+                            );
+                            Navigator.pushNamed(context,
+                                '/'); // Navigate to login screen if email exists
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Text("Sign Up"),
+                    ),
+                    SizedBox(height: 20), // Add some space between the buttons
+                    // New Log In button
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, '/'); // Navigate to the login screen
+                      },
+                      child: Text("Already have an account? Log In"),
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
@@ -156,46 +175,60 @@ class _LoginState extends State<Login> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  final SharedPreferences prefs = await SharedPreferences.getInstance();
-                  try {
-                    final userCredential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                      email: emailController.text,
-                      password: passwordController.text,
-                    );
-                    prefs.setBool("isLoggedIn", true);
-                    // var userDoc = await FirebaseFirestore.instance
-                    //     .collection('users')
-                    //     .doc(userCredential.user!.uid)
-                    //     .get();
-                    // prefs.setString("userName", userDoc['name']);
-                    // prefs.setString("userEmail", userDoc['email']);
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      try {
+                        final userCredential = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+                        prefs.setBool("isLoggedIn", true);
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Logged in as ${emailController.text}")),
-                    );
-                    Navigator.pushNamed(context, '/');
-                    emailController.clear();
-                    passwordController.clear();
-                  } on FirebaseAuthException catch (e) {
-                    prefs.setBool("isLoggedIn", false);
-                    if (e.code == 'user-not-found') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("No user found for that email")),
-                      );
-                      Navigator.pushNamed(context, '/');
-                    } else if (e.code == 'wrong password') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Wrong password provided for that user")),
-                      );
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-                child: Text("Sign in"),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text("Logged in as ${emailController.text}")),
+                        );
+                        emailController.clear();
+                        passwordController.clear();
+                        Navigator.pushNamed(context, '/abc');
+                      } on FirebaseAuthException catch (e) {
+                        print(e.code);
+                        prefs.setBool("isLoggedIn", false);
+                        if (e.code == 'user-not-found') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("No user found for that email")),
+                          );
+                        } else if (e.code == 'invalid-credential') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    "Wrong password provided for that user")),
+                          );
+                        }
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                    child: Text("Sign in"),
+                  ),
+                  SizedBox(height: 20), // Add some space between the buttons
+                    // New Log In button
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, '/signup'); // Navigate to the login screen
+                      },
+                      child: Text("If you don't have an account, sign up"),
+                    ),
+                ],
               ),
             ),
           ],

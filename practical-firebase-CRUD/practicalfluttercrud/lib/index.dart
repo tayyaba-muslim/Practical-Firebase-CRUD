@@ -176,7 +176,7 @@ class _MymedicineState extends State<Mymedicine> {
             onSelected: (value) async {
               if (value == 'logout') {
                 await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.pushReplacementNamed(context, '/');
               } else if (value == 'myProfile') {
                 _showProfileInfo(); // Show profile info in a modal
               }
