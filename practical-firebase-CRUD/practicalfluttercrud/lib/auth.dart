@@ -188,7 +188,6 @@ class _LoginState extends State<Login> {
                           email: emailController.text,
                           password: passwordController.text,
                         );
-                        prefs.setBool("isLoggedIn", true);
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -197,7 +196,10 @@ class _LoginState extends State<Login> {
                         );
                         emailController.clear();
                         passwordController.clear();
-                        Navigator.pushNamed(context, '/abc');
+                        prefs.setBool("isLoggedIn", true);
+                        var test = prefs.getBool("isLoggedIn");
+                        print("<<<<<test>>>>> $test");
+                        Navigator.pushReplacementNamed(context, '/api');
                       } on FirebaseAuthException catch (e) {
                         print(e.code);
                         prefs.setBool("isLoggedIn", false);

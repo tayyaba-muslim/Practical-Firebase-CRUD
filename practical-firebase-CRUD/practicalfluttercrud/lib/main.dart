@@ -5,6 +5,7 @@ import 'package:practicalfluttercrud/auth.dart';
 import 'package:practicalfluttercrud/firebase_options.dart';
 import 'package:practicalfluttercrud/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:practicalfluttercrud/fetchproduct.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,7 @@ void main() async {
   );
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+  print(isLoggedIn);
 
 
   runApp(MyApp(isLoggedIn:isLoggedIn));
@@ -35,10 +37,11 @@ class MyApp extends StatelessWidget {
       home: Login(),
    
        routes:{
-        '/addmedicine':(context)=> isLoggedIn ? AddMedicine(): Login(),
+        '/addmedicine':(context)=> AddMedicine(),
         '/abc':(context)=>Mymedicine(),
         '/signup':(context)=>Signup(),
         // '/login':(context)=>Login(),
+         '/api':(context)=>ProductAPI(),
 
 
       }
